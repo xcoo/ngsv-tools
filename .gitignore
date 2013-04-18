@@ -1,0 +1,8 @@
+*.pyc
+*.mwb.bak
+
+build
+dist
+*.egg
+*.egg-info
+cypileup.c

@@ -12,21 +12,50 @@ Python modules and command line tools for accessing database of NGSV.
 
 # Usage
 
-## Create database
+## 1. Install ngsv-tools
+
+```
+$ python setup.py install
+```
+
+## 2. Create database
 
 ngsv uses MySQL database.
 First, create database.
 
 ```
-$ cd db
-$ mysql -u root -p < ngsv.sql
+$ ngsv initdb [--dbuser DBUSER] [--dbpassword DBPASSWORD]
 ```
 
-## Install ngsv-tools
+## 3. Load genome data into the database
+
+### Load sam/bam files
 
 ```
-$ python setup.py install
+$ ngsv loadsam [--dbuser DBUSER] [--dbpassword DBPASSWORD] samfile1 samfile2 ...
 ```
+
+### Load bed files
+
+```
+$ ngsv loadbed [--dbuser DBUSER] [--dbpassword DBPASSWORD] bedfile1 bedfile2 ...
+```
+
+### Load cytoband data
+
+```
+$ ngsv loadcytoband [--dbuser DBUSER] [--dbpassword DBPASSWORD]
+```
+
+### Load refgenes data
+
+```
+$ ngsv loadrefgene [--dbuser DBUSER] [--dbpassword DBPASSWORD]
+```
+
+## Help
+
+You can see more detail usage by `-h` option.
 
 # License
 

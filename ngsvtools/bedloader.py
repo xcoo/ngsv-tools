@@ -20,10 +20,8 @@
 
 from __future__ import absolute_import
 
-from types import NoneType
+import logging
 import os.path
-
-from celery import current_task
 
 import ngsvtools.pybed as pybed
 from ngsvtools.sam.data.chromosome import Chromosome
@@ -32,7 +30,7 @@ from ngsvtools.sam.data.bedfragment import BedFragment
 from ngsvtools.exception import AlreadyLoadedError, UnsupportedFileError
 
 
-def load(filepath, db):
+def load(filepath, db, action=None):
 
     filename = os.path.basename(filepath)
 
@@ -47,7 +45,7 @@ def load(filepath, db):
     if bed_data.get_by_filename(filename) is not None:
         raise AlreadyLoadedError('WARNING: Already loaded "%s"' % filename)
 
-    print 'begin to load', filename
+    logging.info("Begin to load '%s'" % filename)
 
     # load bed
     bedfile = pybed.BedReader(open(filepath, 'r'))
@@ -105,9 +103,8 @@ def load(filepath, db):
         count += 1
 
         if bedfile.length >= 100 and count % (bedfile.length / 100) == 0:
-            if not isinstance(current_task, NoneType):
-                current_task.update_state(
-                    state='PROGRESS',
-                    meta={'progress': (count + 1) * 100 / bedfile.length})
+            if action is not None:
+                progress = (count + 1) * 100 / bedfile.length
+                action(progress)
 
-    print "loaded %d fragments" % count
+    logging.debug('Loaded %d fragments' % count)

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 #
-#   ngsv-console
-#   http://github.com/xcoo/ngsv-console
-#   Copyright (C) 2012, Xcoo, Inc.
+#   ngsv-tools
+#   http://github.com/xcoo/ngsv-tools
+#   Copyright (C) 2012-2013, Xcoo, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,12 +20,9 @@
 
 from __future__ import absolute_import
 
-from types import NoneType
-
 from ngsvtools.sam.data.samhistogram import SamHistogram
 from ngsvtools.sam.data.histogrambin import HistogramBin
 
-from celery import current_task
 
 cdef class Bin:
 
@@ -40,7 +37,8 @@ cdef class Bin:
         self.hist_id = 0
         self.pos = 0
 
-def pileup(samfile, chromosomes, samId, db):
+
+def pileup(samfile, chromosomes, samId, db, action=None):
     cdef tuple bins
     cdef int bufsize
     cdef Bin b
@@ -92,5 +90,6 @@ def pileup(samfile, chromosomes, samId, db):
             b.sum = 0
             b.pos = 0
 
-        if not isinstance(current_task, NoneType):
-            current_task.update_state(state='PROGRESS', meta={'progress': 50 + (i + 1) * 50 / len(chromosomes)})
+        if action is not None:
+            progress = 50 + (i + 1) * 50 / len(chromosomes)
+            action(progress)

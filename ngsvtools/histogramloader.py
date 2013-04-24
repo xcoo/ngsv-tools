@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 #
-#   ngsv-console
-#   http://github.com/xcoo/ngsv-console
-#   Copyright (C) 2012, Xcoo, Inc.
+#   ngsv-tools
+#   http://github.com/xcoo/ngsv-tools
+#   Copyright (C) 2012-2013, Xcoo, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -56,7 +56,7 @@ def _load_sam(filepath, db):
     return samfile
 
 
-def load(filepath, db):
+def load(filepath, db, action=None):
     samfile = _load_sam(filepath, db)
 
     sam_data = Sam(db)
@@ -80,6 +80,6 @@ def load(filepath, db):
     samId = sam['id']
 
     # cypileup
-    cypileup.pileup(samfile, chromosomes, samId, db)
+    cypileup.pileup(samfile, chromosomes, samId, db, action)
 
     samfile.close()

@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 #
-#   ngsv-console
-#   http://github.com/xcoo/ngsv-console
-#   Copyright (C) 2012, Xcoo, Inc.
+#   ngsv-tools
+#   http://github.com/xcoo/ngsv-tools
+#   Copyright (C) 2012-2013, Xcoo, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -30,14 +30,14 @@ if 'setuptools.extension' in sys.modules:
 
 setup(
     name='ngsv-tools',
-    version='0.1.0',
+    version='0.1.1',
     description='Tools for NGSV database',
     license='Apache License 2.0',
     author='Xcoo, Inc.',
     author_email='developer@xcoo.jp',
-    url='http://github.com/xcoo/ngsv-console',
+    url='http://github.com/xcoo/ngsv-tools',
     setup_requires=['setuptools_cython'],
-    install_requires=['pysam>=0.7', 'MySQL-python', 'celery'],
+    install_requires=['pysam>=0.7', 'MySQL-python'],
     ext_modules=[Extension('ngsvtools.cypileup', ['ngsvtools/cypileup.pyx'])],
     scripts=['scripts/ngsv'],
     packages=['ngsvtools', 'ngsvtools.sam', 'ngsvtools.sam.data'],

@@ -28,6 +28,7 @@ from ngsvtools.sam.data.chromosome import Chromosome
 from ngsvtools.sam.data.bed import Bed
 from ngsvtools.sam.data.bedfragment import BedFragment
 from ngsvtools.exception import AlreadyLoadedError, UnsupportedFileError
+from ngsvtools.action import BedLoaderAction
 
 
 def load(filepath, db, action=None):
@@ -104,7 +105,9 @@ def load(filepath, db, action=None):
 
         if bedfile.length >= 100 and count % (bedfile.length / 100) == 0:
             if action is not None:
-                progress = (count + 1) * 100 / bedfile.length
-                action(progress)
+                act = action()
+                if isinstance(act, BedLoaderAction):
+                    progress = (count + 1) * 100 / bedfile.length
+                    act(progress)
 
     logging.debug('Loaded %d fragments' % count)

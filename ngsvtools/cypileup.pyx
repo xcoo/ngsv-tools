@@ -24,6 +24,7 @@ import logging
 
 from ngsvtools.sam.data.samhistogram import SamHistogram
 from ngsvtools.sam.data.histogrambin import HistogramBin
+from ngsvtools.action import HistogramLoaderAction
 
 
 cdef class Bin:
@@ -91,5 +92,7 @@ def pileup(samfile, chromosomes, samId, db, action=None):
             b.pos = 0
 
         if action is not None:
-            progress = (i + 1) * 100 / len(chromosomes)
-            action(progress)
+            act = action()
+            if isinstance(act, HistogramLoaderAction):
+                progress = (i + 1) * 100 / len(chromosomes)
+                act(progress)

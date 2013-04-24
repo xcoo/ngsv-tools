@@ -20,6 +20,7 @@
 
 from __future__ import absolute_import
 
+import logging
 import os.path
 import re
 
@@ -39,7 +40,7 @@ def _load_sam(filepath, db):
     if not re.match('^\.(sam|bam)', ext):
         raise UnsupportedFileError('ERROR: Not supported file format')
 
-    print 'begin to load', filename
+    logging.info("Begin to load '%s'" % filename)
 
     if ext == '.sam':
         if os.path.isfile(base + '.bam'):
@@ -75,7 +76,7 @@ def load(filepath, db, action=None):
     sam = sam_data.get_by_filename(filename)
 
     if sam is None:
-        print 'Error : please load "%s" first' % filename
+        logging.error('Error : please load "%s" first' % filename)
 
     samId = sam['id']
 

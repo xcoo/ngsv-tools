@@ -20,12 +20,13 @@
 
 from __future__ import absolute_import
 
-import sys
+import logging
 import gzip
 
 from ngsvtools.cache import Cache
 from ngsvtools.sam.data.chromosome import Chromosome
 from ngsvtools.sam.data.cytoband import CytoBand
+from ngsvtools.exception import AlreadyLoadedError
 
 
 def _update_database(fp, cytoband_data, chromosome_data):
@@ -55,9 +56,9 @@ def _update_database(fp, cytoband_data, chromosome_data):
 
         count += 1
 
-        print "loaded %d bands\r" % count,
+        logging.debug("Loaded %d bands\r" % count)
 
-    print "loaded %d bands" % count
+    logging.debug("Loaded %d bands" % count)
 
 
 def load(db):
@@ -65,17 +66,16 @@ def load(db):
     chromosome_data = Chromosome(db)
 
     if cytoband_data.count() > 0:
-        print "CytoBand is already loaded"
-        sys.exit()
+        raise AlreadyLoadedError('CytoBand is already loaded')
 
     url = "http://hgdownload.cse.ucsc.edu/goldenPath/hg19/database/cytoBand.txt.gz"
 
-    print "begin to download from %s" % url
+    logging.info("Begin to download from %s" % url)
 
     c = Cache(url)
     c.load()
 
-    print "updating database"
+    logging.info("updating database")
 
     f = gzip.open(c.name)
 

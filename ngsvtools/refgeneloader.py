@@ -20,12 +20,13 @@
 
 from __future__ import absolute_import
 
-import sys
+import logging
 import gzip
 
 from ngsvtools.cache import Cache
 from ngsvtools.sam.data.chromosome import Chromosome
 from ngsvtools.sam.data.refgene import RefGene
+from ngsvtools.exception import AlreadyLoadedError
 
 
 def _update_database(fp, refgene_data, chromosome_data):
@@ -97,17 +98,16 @@ def load(db):
     chromosome_data = Chromosome(db)
 
     if refgene_data.count() > 0:
-        print "RefGene is already loaded"
-        sys.exit()
+        raise AlreadyLoadedError('RefGene is already loaded')
 
     url = "http://hgdownload.cse.ucsc.edu/goldenPath/hg19/database/refGene.txt.gz"
 
-    print "begin to download from %s" % url
+    logging.info("Begin to download from %s" % url)
 
     c = Cache(url)
     c.load()
 
-    print "updating database"
+    logging.info("updating database")
 
     f = gzip.open(c.name)
 

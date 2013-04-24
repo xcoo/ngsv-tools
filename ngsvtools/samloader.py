@@ -20,6 +20,7 @@
 
 from __future__ import absolute_import
 
+import logging
 import os.path
 import re
 
@@ -43,7 +44,7 @@ def load(filepath, db):
     if sam_data.get_by_filename(filename) is not None:
         raise AlreadyLoadedError('WARNING: Already loaded "%s"' % filename)
 
-    print 'begin to load', filename
+    logging.info("Begin to load '%s'" % filename)
 
     # Convert sam to bam
     if ext == '.sam':
@@ -56,7 +57,7 @@ def load(filepath, db):
     # Create index if not exist
     bai = filepath + '.bai'
     if not os.path.isfile(bai):
-        print 'Create index "%s"' % os.path.basename(bai)
+        logging.info("Create index '%s'" % os.path.basename(bai))
         pysam.index(filepath)
 
     # load sam

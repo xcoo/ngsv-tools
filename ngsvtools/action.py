@@ -27,3 +27,9 @@ class HistogramLoaderAction(Action):
 
     def __call__(self, progress):
         pass
+
+
+class BedLoaderAction(Action):
+
+    def __call__(self, progress):
+        pass

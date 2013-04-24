@@ -20,6 +20,8 @@
 
 from __future__ import absolute_import
 
+import logging
+
 from ngsvtools.sam.data.samhistogram import SamHistogram
 from ngsvtools.sam.data.histogrambin import HistogramBin
 
@@ -56,7 +58,8 @@ def pileup(samfile, chromosomes, samId, db, action=None):
 
     for i, c in enumerate(chromosomes):
 
-        print 'ChrID: %2d, ChrName: %s' % (c['id'], c['name'])
+        logging.debug('Load HistogramBin: ChrID %2d, ChrName %s' % (c['id'],
+                                                                    c['name']))
 
         for p in samfile.pileup(str(c['ref'])):
 
@@ -71,9 +74,6 @@ def pileup(samfile, chromosomes, samId, db, action=None):
 
                         if hist_bin.lenbuf() >= bufsize:
                             hist_bin.flush()
-
-#                        if b.size == 10000:
-#                            print '%10d: %6d\r' % (b.pos, b.sum),
 
                         b.sum = 0
                         b.pos = p.pos / b.size * b.size
@@ -91,5 +91,5 @@ def pileup(samfile, chromosomes, samId, db, action=None):
             b.pos = 0
 
         if action is not None:
-            progress = 50 + (i + 1) * 50 / len(chromosomes)
+            progress = (i + 1) * 100 / len(chromosomes)
             action(progress)

@@ -22,8 +22,10 @@
 __author__ = 'Xcoo, Inc.'
 
 import argparse
+import logging
 import os
 from pkg_resources import resource_string
+import re
 import tempfile
 
 import ngsvtools.samloader
@@ -35,6 +37,8 @@ from ngsvtools.sam.data.sql import SQLDB
 
 
 def initdb(args):
+    _setup_logging(args.loglevel)
+
     sql = resource_string('ngsvtools', 'data/ngsv.sql')
 
     fd, path = tempfile.mkstemp()
@@ -50,6 +54,7 @@ def initdb(args):
 
 
 def loadsam(args):
+    _setup_logging(args.loglevel)
     db = SQLDB(args.dbname, args.dbhost, args.dbuser, args.dbpassword)
     for f in args.samfile:
         ngsvtools.samloader.load(f, db)
@@ -57,22 +62,45 @@ def loadsam(args):
 
 
 def loadbed(args):
+    _setup_logging(args.loglevel)
     db = SQLDB(args.dbname, args.dbhost, args.dbuser, args.dbpassword)
     for f in args.bedfile:
         ngsvtools.bedloader.load(f, db)
 
 
 def loadcytoband(args):
+    _setup_logging(args.loglevel)
     db = SQLDB(args.dbname, args.dbhost, args.dbuser, args.dbpassword)
     ngsvtools.cytobandloader.load(db)
 
 
 def loadrefgene(args):
+    _setup_logging(args.loglevel)
     db = SQLDB(args.dbname, args.dbhost, args.dbuser, args.dbpassword)
     ngsvtools.refgeneloader.load(db)
 
 
-def add_db_arguments(parser):
+def _setup_logging(args_loglevel):
+    loglevel = logging.INFO
+    p = re.compile(args_loglevel, re.IGNORECASE)
+    if p.match('debug') is not None:
+        loglevel = logging.DEBUG
+    elif p.match('info') is not None:
+        loglevel = logging.INFO
+    elif p.match('warning') is not None:
+        loglevel = logging.WARNING
+    elif p.match('error') is not None:
+        loglevel = logging.ERROR
+    elif p.match('critical') is not None:
+        loglevel = logging.CRITICAL
+    elif p.match('fatal') is not None:
+        loglevel = logging.FATAL
+    logging.basicConfig(level=loglevel)
+
+
+def _add_share_arguments(parser):
+    parser.add_argument('--loglevel', default='INFO',
+                        help='Logging level, choose between DEBUG, INFO, WARNING, ERROR, CRITICAL, or FATAL')
     parser.add_argument('--dbhost', default='127.0.0.1',
                         help="Host of MySQL server (default: '127.0.0.1')")
     parser.add_argument('--dbuser', default='root',
@@ -87,26 +115,26 @@ if __name__ == '__main__':
     subparsers = parser.add_subparsers()
 
     parser_initdb = subparsers.add_parser('initdb', help='Initialize MySQL DB')
-    add_db_arguments(parser_initdb)
+    _add_share_arguments(parser_initdb)
     parser_initdb.set_defaults(func=initdb)
 
     parser_sam = subparsers.add_parser('loadsam', help='Load sam/bam file')
-    add_db_arguments(parser_sam)
+    _add_share_arguments(parser_sam)
     parser_sam.add_argument('samfile', nargs='+', help='sam/bam files')
     parser_sam.set_defaults(func=loadsam)
 
     parser_bed = subparsers.add_parser('loadbed', help='Load bed file')
-    add_db_arguments(parser_bed)
+    _add_share_arguments(parser_bed)
     parser_bed.add_argument('bedfile', nargs='+', help='bed files')
     parser_bed.set_defaults(func=loadbed)
 
     parser_cytoband = subparsers.add_parser('loadcytoband',
                                             help='Load cytoband')
-    add_db_arguments(parser_cytoband)
+    _add_share_arguments(parser_cytoband)
     parser_cytoband.set_defaults(func=loadcytoband)
 
     parser_refgene = subparsers.add_parser('loadrefgene', help='Load refgene')
-    add_db_arguments(parser_refgene)
+    _add_share_arguments(parser_refgene)
     parser_refgene.set_defaults(func=loadrefgene)
 
     args = parser.parse_args()

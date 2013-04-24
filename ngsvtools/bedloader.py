@@ -18,17 +18,18 @@
 # limitations under the License.
 #
 
+from __future__ import absolute_import
+
 from types import NoneType
 import os.path
 
 from celery import current_task
 
-import pybed
-
-from sam.data.chromosome import Chromosome
-from sam.data.bed import Bed
-from sam.data.bedfragment import BedFragment
-from exception import AlreadyLoadedError, UnsupportedFileError
+import ngsvtools.pybed as pybed
+from ngsvtools.sam.data.chromosome import Chromosome
+from ngsvtools.sam.data.bed import Bed
+from ngsvtools.sam.data.bedfragment import BedFragment
+from ngsvtools.exception import AlreadyLoadedError, UnsupportedFileError
 
 
 def load(filepath, db):

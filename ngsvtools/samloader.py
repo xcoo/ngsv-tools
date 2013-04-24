@@ -18,15 +18,17 @@
 # limitations under the License.
 #
 
+from __future__ import absolute_import
+
 import os.path
 import re
 
 import pysam
 
-from sam.data.sam import Sam
-from sam.data.chromosome import Chromosome
-from sam.util import trim_chromosome_name
-from exception import AlreadyLoadedError, UnsupportedFileError
+from ngsvtools.sam.data.sam import Sam
+from ngsvtools.sam.data.chromosome import Chromosome
+from ngsvtools.sam.util import trim_chromosome_name
+from ngsvtools.exception import AlreadyLoadedError, UnsupportedFileError
 
 
 def load(filepath, db):

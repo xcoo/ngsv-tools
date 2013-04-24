@@ -18,6 +18,8 @@
 # limitations under the License.
 #
 
+from __future__ import absolute_import
+
 from types import NoneType
 
 from ngsvtools.sam.data.samhistogram import SamHistogram
@@ -47,20 +49,20 @@ def pileup(samfile, chromosomes, samId, db):
     hist_bin = HistogramBin(db)
 
     bins = (Bin(100), Bin(10000), Bin(1000000))
-    
+
     bufsize = 10000
-    
+
     for b in bins:
         sam_hist.append(samId, b.size)
         b.hist_id = sam_hist.get_by_samid_binSize(samId, b.size)['hist_id']
 
     for i, c in enumerate(chromosomes):
-        
+
         print 'ChrID: %2d, ChrName: %s' % (c['id'], c['name'])
-        
+
         for p in samfile.pileup(str(c['ref'])):
 
-            for b in bins:                
+            for b in bins:
                 if b.size == 1:
                     hist_bin.appendbuf(b.hist_id, p.n, p.pos, c['id'])
                     if hist_bin.lenbuf() >= bufsize:
@@ -73,8 +75,8 @@ def pileup(samfile, chromosomes, samId, db):
                             hist_bin.flush()
 
 #                        if b.size == 10000:
-#                            print '%10d: %6d\r' % (b.pos, b.sum),       
-                    
+#                            print '%10d: %6d\r' % (b.pos, b.sum),
+
                         b.sum = 0
                         b.pos = p.pos / b.size * b.size
 
@@ -85,7 +87,7 @@ def pileup(samfile, chromosomes, samId, db):
                 hist_bin.appendbuf(b.hist_id, b.sum, b.pos, c['id'])
 
         hist_bin.flush()
-                
+
         for b in bins:
             b.sum = 0
             b.pos = 0

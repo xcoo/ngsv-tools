@@ -18,16 +18,18 @@
 # limitations under the License.
 #
 
+from __future__ import absolute_import
+
 import os.path
 import re
 
 import pysam
 
-import cypileup
-from sam.data.sam import Sam
-from sam.data.chromosome import Chromosome
-from sam.util import trim_chromosome_name
-from exception import UnsupportedFileError
+import ngsvtools.cypileup as cypileup
+from ngsvtools.sam.data.sam import Sam
+from ngsvtools.sam.data.chromosome import Chromosome
+from ngsvtools.sam.util import trim_chromosome_name
+from ngsvtools.exception import UnsupportedFileError
 
 
 def _load_sam(filepath, db):

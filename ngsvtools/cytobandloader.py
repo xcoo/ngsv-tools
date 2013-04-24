@@ -18,12 +18,14 @@
 # limitations under the License.
 #
 
+from __future__ import absolute_import
+
 import sys
 import gzip
 
-from cache import Cache
-from sam.data.chromosome import Chromosome
-from sam.data.cytoband import CytoBand
+from ngsvtools.cache import Cache
+from ngsvtools.sam.data.chromosome import Chromosome
+from ngsvtools.sam.data.cytoband import CytoBand
 
 
 def _update_database(fp, cytoband_data, chromosome_data):

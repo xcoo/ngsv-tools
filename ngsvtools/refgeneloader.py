@@ -18,12 +18,14 @@
 # limitations under the License.
 #
 
+from __future__ import absolute_import
+
 import sys
 import gzip
 
-from cache import Cache
-from sam.data.chromosome import Chromosome
-from sam.data.refgene import RefGene
+from ngsvtools.cache import Cache
+from ngsvtools.sam.data.chromosome import Chromosome
+from ngsvtools.sam.data.refgene import RefGene
 
 
 def _update_database(fp, refgene_data, chromosome_data):

@@ -85,6 +85,12 @@ def loadrefgene(args):
     ngsvtools.refgeneloader.load(db)
 
 
+def loadcnv(args):
+    _setup_logging(args.loglevel)
+    db = SQLDB(args.dbname, args.dbhost, args.dbuser, args.dbpassword)
+    ngsvtools.refgeneloader.load(db)
+
+
 def _setup_logging(args_loglevel):
     loglevel = logging.INFO
     p = re.compile(args_loglevel, re.IGNORECASE)

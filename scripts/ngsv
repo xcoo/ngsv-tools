@@ -33,6 +33,7 @@ import ngsvtools.histogramloader
 import ngsvtools.bedloader
 import ngsvtools.cytobandloader
 import ngsvtools.refgeneloader
+import ngsvtools.cnvloader
 from ngsvtools.sam.data.sql import SQLDB
 
 
@@ -40,16 +41,20 @@ def initdb(args):
     _setup_logging(args.loglevel)
 
     sql = resource_string('ngsvtools', 'data/ngsv.sql')
+    _source(sql, args.dbuser, args.dbpassword)
 
+    sql = resource_string('ngsvtools', 'data/cnv.sql')
+    _source(sql, args.dbuser, args.dbpassword)
+
+
+def _source(sql, dbuser, dbpassword):
     fd, path = tempfile.mkstemp()
     os.write(fd, sql)
     os.close(fd)
-
-    cmd = 'mysql --user=%s --password=%s < %s' % (args.dbuser,
-                                                  args.dbpassword,
+    cmd = 'mysql --user=%s --password=%s < %s' % (dbuser,
+                                                  dbpassword,
                                                   path)
     os.system(cmd)
-
     os.remove(path)
 
 
@@ -136,6 +141,11 @@ if __name__ == '__main__':
     parser_refgene = subparsers.add_parser('loadrefgene', help='Load refgene')
     _add_share_arguments(parser_refgene)
     parser_refgene.set_defaults(func=loadrefgene)
+
+    parser_cnv = subparsers.add_parser('loadcnv', help='Load cnv file')
+    _add_share_arguments(parser_cnv)
+    parser_cnv.add_argument('cnvfile', nargs='+', help='cnv files')
+    parser_cnv.set_defaults(func=loadcnv)
 
     args = parser.parse_args()
     args.func(args)
